@@ -1,0 +1,15 @@
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.hover-text {
+    font-size: 20px;
+    fill: #000000;
+}
+.hover-text:hover {
+    animation: fadein 2s ease-in-out;
+}
