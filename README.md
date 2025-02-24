@@ -3,6 +3,16 @@
 ## Description
 This program is the solution of the first laboratory work on OOP in the 4th term of the Yanka Kupala State Uneversity of Grodno.
 
+## Table of content
+1. [Problem Requiments](https://github.com/Definazu/TweetMoodVisualizer#problem-requiments)
+	a. [Input data](https://github.com/Definazu/TweetMoodVisualizer#input-data)
+	b. [Phase 1. The feelings in tweets](https://github.com/Definazu/TweetMoodVisualizer#phase-1-the-feelings-in-tweets)
+	c. [Phase 2. The mood of the nation](https://github.com/Definazu/TweetMoodVisualizer#phase-2-the-mood-of-the-nation)
+2. [Project Stack](https://github.com/Definazu/TweetMoodVisualizer#project-stack)
+3. [Description of microservices](https://github.com/Definazu/TweetMoodVisualizer#description-of-microservices)
+	a. [TweetCollectionService](https://github.com/Definazu/TweetMoodVisualizer#tweetcollectionservice)
+	b. [SentimentalAnalysisService](https://github.com/Definazu/TweetMoodVisualizer#sentimentalanalysisservice)
+
 ## Problem Requiments
 In this project, you will develop a visualization of twitter data across the USA. The map displayed below depicts how the people in different states feel about California.
 
@@ -54,3 +64,33 @@ If a state has no tweets with sentiment values, leave it out of the dictionary e
 
 #### Problem 6.
 You should now be able to draw maps that are colored by sentiment corresponding to tweets that contain a given term. The correct map for «cali» appears at the top of this document.
+
+## Project Stack
+* Flask (API)
+* React
+* PostgresDB
+* Unit Tests 
+* Docker
+
+## Description of microservices
+
+### TweetCollectionService
+
+#### Functions:
+- Collecting/reading tweets
+- Writing to database
+
+#### Technologes:
+- Pyhton
+- Flask
+
+### SentimentalAnalysisService
+
+#### Functions:
+- Text processing of tweets and sentiment analysis (positive or negative)
+- Calculating the average sentiment value by state
+- Storing and sharing sentiment data from tweets
+
+#### Technologes:
+- Python
+- Flask
