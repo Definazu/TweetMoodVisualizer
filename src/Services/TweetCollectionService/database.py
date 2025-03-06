@@ -10,8 +10,14 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 import os
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+db_dir = os.path.join(parent_dir, 'DataBase')
+db_path = os.path.join(db_dir, 'DataTweets.db')
+
+os.makedirs(db_dir, exist_ok=True)
+
 Base = declarative_base()
-db_path = os.path.join(os.path.dirname(__file__), 'DataTweets.db')
 engine = create_engine(f'sqlite:///{db_path}', connect_args={'check_same_thread': False})
 Session = scoped_session(sessionmaker(bind=engine))
 
@@ -21,6 +27,9 @@ def init_db():
     Creates all defined tables if they don't exist.
     Should be called once at application startup.
     """
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir, exist_ok=True)
+
     Base.metadata.create_all(bind=engine)
     print("Database initialized successfully")
 

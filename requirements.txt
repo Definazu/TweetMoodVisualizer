@@ -1,3 +1,4 @@
 # requirements.txt
 flask>=2.0.0
 sqlalchemy>=2.0.0
+shapely>=1.8.0
