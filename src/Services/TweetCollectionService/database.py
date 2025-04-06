@@ -72,3 +72,13 @@ def create_table(table_name: str):
         Base.metadata.create_all(bind=engine, tables=[Tweet.__table__])
     
     return Tweet
+
+def get_all_tables():
+    """Retrieve list of all user-created table names in the database.
+
+    Returns:
+        List[str]: Names of all application tables excluding system tables
+    """
+    inspector = inspect(engine)
+    all_tables = inspector.get_table_names()
+    return [table for table in all_tables if not table.startswith('sqlite_')]

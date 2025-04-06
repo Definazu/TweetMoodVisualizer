@@ -7,7 +7,9 @@ Contains the blueprint definition and route handlers for the upload endpoint.
 
 from flask import Blueprint, request, jsonify, current_app
 from services import FileProcessingService
+from database import get_all_tables
 from exceptions import InvalidFileError, DataProcessingError
+
 
 upload_blueprint = Blueprint('upload', __name__)
 
@@ -47,3 +49,21 @@ def upload_file():
     except Exception as e:
         current_app.logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         return jsonify({'error': 'Internal server error'}), 500
+
+
+@upload_blueprint.route('/tables', methods=['GET'])
+def get_tables():
+    """Get list of all tweet tables in database.
+
+    Returns:
+        JSON response with list of table names or error message
+
+    Example:
+        curl http://localhost:5000/tables
+    """
+    try:
+        tables = get_all_tables()
+        return jsonify({'tables': tables}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error retrieving tables: {str(e)}", exc_info=True)
+        return jsonify({'error': 'Failed to retrieve tables'}), 500
