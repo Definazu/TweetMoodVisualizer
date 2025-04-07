@@ -32,7 +32,7 @@ const USMap: React.FC<USMapProps> = ({ onStateClick }) => {
                     style={{cursor: "pointer"}}
                 />
             ))}
-            {/* Вставьте предоставленный SVG-код здесь */}
+
             <path
                 id="MA"
                 data-name="Massachusetts"

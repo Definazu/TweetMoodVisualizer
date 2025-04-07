@@ -33,18 +33,6 @@ const SVGMap: React.FC<SVGMapProps> = ({ paths }) => {
 
     return (
         <>
-            <style>
-                {`
-    @keyframes fadein {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    `}
-            </style>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="589px"

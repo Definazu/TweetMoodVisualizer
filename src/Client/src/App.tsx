@@ -1,12 +1,15 @@
 
 import './App.css'
-import MainPage from "./pages/mainPage.tsx";
+
+import SVGMap from "./components/SVGMap.tsx";
+import paths from "./components/pathes.tsx";
+
 
 function App() {
 
   return (
     <div>
-      <MainPage/>
+      <SVGMap paths={paths} />
     </div>
   )
 }
