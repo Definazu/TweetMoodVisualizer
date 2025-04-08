@@ -3,9 +3,10 @@ from flask import Flask, jsonify
 from controllers import AnalysisController
 from config import Config
 from state_locator import StateLocator
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 try:
     config = Config()
     print("\n🔧 Configuration check:")

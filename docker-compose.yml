@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./src/Client/
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - PORT=5173
+    volumes:
+      - ./src/Client:/app
+      - /app/node_modules
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  sentiment-analysis:
+    build:
+      context: .
+      dockerfile: ./src/Services/SentimentAnalysisService/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_RUN_PORT=5000
+    volumes:
+      - ./Data/sentiments.csv:/Data/sentiments.csv
+      - ./Data/states.json:/Data/states.json
+      - ./src/Services/DataBase/DataTweets.db:/src/Services/DataBase/DataTweets.db
+    networks:
+      - app-network
+    depends_on:
+      - tweet-collection
+    restart: unless-stopped
+
+  tweet-collection:
+    build:
+      context: .
+      dockerfile: ./src/Services/TweetCollectionService/Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_RUN_PORT=5001
+    volumes:
+      - ./Data/sentiments.csv:/Data/sentiments.csv
+      - ./Data/states.json:/Data/states.json
+      - ./src/Services/DataBase/DataTweets.db:/src/Services/DataBase/DataTweets.db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import "../styles/SVGMapStyles.css"
-// Интерфейс для данных пути
+import axios from "axios";
+
 interface PathData {
     id: string;
     dataName: string;
@@ -15,10 +16,35 @@ interface SVGMapProps {
 
 const SVGMap: React.FC<SVGMapProps> = ({ paths }) => {
     const pathRefs = useRef<(SVGPathElement | null)[]>([]);
-    const [hoveredState, setHoveredState] = useState<string | null>(null);
+    // const [hoveredState, setHoveredState] = useState<string | null>(null);
+    const [colorData, setColorData] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchColors = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(`http://localhost:5000/analyze/football_tweets2014`);
+                setColorData(response.data);
+                setError(null);
+            } catch (error) {
+                console.error("Error fetching color data:", error);
+                setError("Failed to load color data");
+
+                setColorData(Object.fromEntries(
+                    paths.map(path => [path.id, path.style?.fill || "#f9f9f9"])
+                ));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchColors();
+    }, [paths]);
 
     useEffect(() => {
-        // После рендеринга вычисляем центр для каждого пути и позиционируем текст
+        if (loading) return;
+
         pathRefs.current.forEach((path, index) => {
             if (path) {
                 const bbox = path.getBBox();
@@ -29,49 +55,60 @@ const SVGMap: React.FC<SVGMapProps> = ({ paths }) => {
                 }
             }
         });
-    }, [paths]);
+    }, [paths, loading]);
+
+    const getFillColor = (path: PathData) => {
+        // Priority: API color > path style fill > default
+        return colorData[path.id] || path.style?.fill || "#f9f9f9";
+    };
+
+    if (loading) {
+        return <div className="loading-indicator">Loading map data...</div>;
+    }
+
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
 
     return (
-        <>
+        <div className="svg-map-container">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="589px"
                 width="1000px"
                 viewBox="0 0 1000 589"
-                style={{strokeLinejoin: 'round', stroke: '#000', fill: 'none'}}
+                className="us-map-svg"
             >
                 {paths.map((path, index) => (
-                    <React.Fragment key={path.id}>
+                    <React.Fragment key={`${path.id}-${index}`}>
                         <path
                             ref={(el) => {
-                                pathRefs.current[index] = el; // Сохраняем ссылку на путь
+                                pathRefs.current[index] = el;
                             }}
                             id={path.id}
                             data-name={path.dataName}
                             data-id={path.dataId}
                             d={path.d}
-                            style={path.style}
-                            onMouseEnter={() => setHoveredState(path.id)} // Показываем текст при наведении
-                            onMouseLeave={() => setHoveredState(null)} // Скрываем текст при уходе курсора
+                            style={{
+                                ...path.style,
+                                fill: getFillColor(path),
+                                transition: "fill 0.3s ease-in-out"
+                            }}
+                            className="state-path"
+                            // onMouseEnter={() => setHoveredState(path.id)}
+                            // onMouseLeave={() => setHoveredState(null)}
                         />
                         <text
                             id={`text-${path.id}`}
                             textAnchor="middle"
-                            className="hover-text"
-                            style={{
-                                pointerEvents: 'none',
-                                opacity: hoveredState === path.id ? 1 : 0, // Используем opacity для анимации
-                                animation: hoveredState === path.id ? 'fadein 0.25s ease-in-out' : 'none', // Правильное написание ease-in-out
-                                transition: 'opacity 0.5s ease-in-out', // Добавляем transition для плавного исчезновения
-                            }}
+                            className={`state-label`}
                         >
                             {path.dataId}
                         </text>
                     </React.Fragment>
                 ))}
             </svg>
-        </>
-
+        </div>
     );
 };
 

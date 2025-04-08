@@ -13,3 +13,6 @@
 .hover-text:hover {
     animation: fadein 2s ease-in-out;
 }
+.state-label {
+    font-size: 12px;
+}
