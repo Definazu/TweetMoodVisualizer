@@ -29,7 +29,7 @@ def upload_file():
         - Server error: 500 Internal Server Error
         
     Example:
-        curl -X POST -F "file=@data.txt" http://localhost:5000/upload
+        curl -X POST -F "file=@data.txt" http://localhost:5001/upload
     """
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
@@ -59,7 +59,7 @@ def get_tables():
         JSON response with list of table names or error message
 
     Example:
-        curl http://localhost:5000/tables
+        curl http://localhost:5001/tables
     """
     try:
         tables = get_all_tables()

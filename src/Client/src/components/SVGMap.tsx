@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import "../styles/SVGMapStyles.css"
-import axios from "axios";
+import React, { useEffect, useRef, useMemo } from 'react';
+import "../styles/SVGMapStyles.css";
 
 interface PathData {
     id: string;
@@ -12,39 +11,19 @@ interface PathData {
 
 interface SVGMapProps {
     paths: PathData[];
+    colorData: Record<string, string>;
 }
 
-const SVGMap: React.FC<SVGMapProps> = ({ paths }) => {
+const SVGMap: React.FC<SVGMapProps> = ({ paths, colorData }) => {
     const pathRefs = useRef<(SVGPathElement | null)[]>([]);
-    // const [hoveredState, setHoveredState] = useState<string | null>(null);
-    const [colorData, setColorData] = useState<Record<string, string>>({});
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    useEffect(() => {
-        const fetchColors = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`http://localhost:5000/analyze/football_tweets2014`);
-                setColorData(response.data);
-                setError(null);
-            } catch (error) {
-                console.error("Error fetching color data:", error);
-                setError("Failed to load color data");
-
-                setColorData(Object.fromEntries(
-                    paths.map(path => [path.id, path.style?.fill || "#f9f9f9"])
-                ));
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchColors();
-    }, [paths]);
+    const isColored = useMemo(() => {
+        return paths.some((path) => {
+            const color = colorData[path.id];
+            return color && color.toLowerCase() !== "#c2c2c2";
+        });
+    }, [paths, colorData]);
 
     useEffect(() => {
-        if (loading) return;
-
         pathRefs.current.forEach((path, index) => {
             if (path) {
                 const bbox = path.getBBox();
@@ -55,23 +34,16 @@ const SVGMap: React.FC<SVGMapProps> = ({ paths }) => {
                 }
             }
         });
-    }, [paths, loading]);
+    }, [paths, colorData]);
 
     const getFillColor = (path: PathData) => {
-        // Priority: API color > path style fill > default
         return colorData[path.id] || path.style?.fill || "#f9f9f9";
     };
 
-    if (loading) {
-        return <div className="loading-indicator">Loading map data...</div>;
-    }
-
-    if (error) {
-        return <div className="error-message">{error}</div>;
-    }
-
     return (
         <div className="svg-map-container">
+            {/* Неоновая подсветка */}
+            <div className={`neon-lamp ${isColored ? "neon-colored" : "neon-gray"}`} />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="589px"
@@ -95,13 +67,11 @@ const SVGMap: React.FC<SVGMapProps> = ({ paths }) => {
                                 transition: "fill 0.3s ease-in-out"
                             }}
                             className="state-path"
-                            // onMouseEnter={() => setHoveredState(path.id)}
-                            // onMouseLeave={() => setHoveredState(null)}
                         />
                         <text
                             id={`text-${path.id}`}
                             textAnchor="middle"
-                            className={`state-label`}
+                            className="state-label"
                         >
                             {path.dataId}
                         </text>
