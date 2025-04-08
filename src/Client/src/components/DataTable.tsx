@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-
-interface TableData {
-    id: string;
-    name: string;
-    value: string;
-}
+import axios from "axios";
 
 const DataTable: React.FC = () => {
-    const [tableData, setTableData] = useState<TableData[]>([]);
+    const [tables, setTables] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Функция для загрузки данных с API
     const fetchData = async () => {
         try {
-            const response = await fetch('https://your-api-url.com/data');
-            const data = await response.json();
-            setTableData(data);
+            setLoading(true);
+            setError(null);
+            const response = await axios.get<{ tables: string[] }>('http://localhost:5001/tables');
+            setTables(response.data.tables);
+            console.log(response.data);
         } catch (error) {
             console.error('Ошибка при загрузке данных:', error);
+            setError('Не удалось загрузить данные');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -24,25 +25,62 @@ const DataTable: React.FC = () => {
         fetchData();
     }, []);
 
+    if (loading) {
+        return <div>Загрузка данных...</div>;
+    }
+
+    if (error) {
+        return (
+            <div>
+                <div style={{ color: 'red' }}>{error}</div>
+                <button onClick={fetchData}>Повторить попытку</button>
+            </div>
+        );
+    }
+
     return (
-        <div>
-            <button onClick={fetchData}>Обновить таблицу</button>
-            <table>
+        <div style={{ padding: '20px', marginTop: '50px' }}>
+            <button
+                onClick={fetchData}
+                style={{
+                    marginBottom: '20px',
+                    padding: '8px 16px',
+                    backgroundColor: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                }}
+            >
+                Обновить таблицу
+            </button>
+
+            <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+            }}>
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Имя</th>
-                    <th>Значение</th>
+                <tr style={{ backgroundColor: '#242424' }}>
+                    <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>#</th>
+                    <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Имя таблицы</th>
                 </tr>
                 </thead>
                 <tbody>
-                {tableData.map((row) => (
-                    <tr key={row.id}>
-                        <td>{row.id}</td>
-                        <td>{row.name}</td>
-                        <td>{row.value}</td>
+                {tables.length > 0 ? (
+                    tables.map((tableName, index) => (
+                        <tr key={index} style={{ borderBottom: '1px solid #ddd' }}>
+                            <td style={{ padding: '12px' }}>{index + 1}</td>
+                            <td style={{ padding: '12px' }}>{tableName}</td>
+                        </tr>
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan={2} style={{ padding: '12px', textAlign: 'center' }}>
+                            Нет данных для отображения
+                        </td>
                     </tr>
-                ))}
+                )}
                 </tbody>
             </table>
         </div>

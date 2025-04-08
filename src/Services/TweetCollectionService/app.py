@@ -5,12 +5,14 @@ and registers API blueprints.
 """
 
 from flask import Flask
+from flask_cors import CORS
 from routes import upload_blueprint
 from database import init_db
 import logging
 
 
 app = Flask(__name__)
+CORS(app)
 app.register_blueprint(upload_blueprint)
 
 logging.basicConfig(level=logging.INFO)
