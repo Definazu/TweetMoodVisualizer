@@ -8,7 +8,6 @@ from sqlalchemy import create_engine, Column, Integer, Float, DateTime, String, 
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 import os
-import logging
 
 
 db_path = '/src/Services/DataBase/DataTweets.db'
