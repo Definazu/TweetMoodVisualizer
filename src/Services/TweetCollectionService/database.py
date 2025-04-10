@@ -1,4 +1,3 @@
-# database.py
 """
 Database module for SQLAlchemy configuration and operations.
 
@@ -9,11 +8,12 @@ from sqlalchemy import create_engine, Column, Integer, Float, DateTime, String, 
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 import os
+import logging
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-db_dir = os.path.join(parent_dir, 'DataBase')
-db_path = os.path.join(db_dir, 'DataTweets.db')
+
+db_path = '/src/Services/DataBase/DataTweets.db'
+db_dir = os.path.dirname(db_path)
+
 
 os.makedirs(db_dir, exist_ok=True)
 
@@ -23,15 +23,12 @@ Session = scoped_session(sessionmaker(bind=engine))
 
 def init_db():
     """Initialize database schema.
-    
+
     Creates all defined tables if they don't exist.
     Should be called once at application startup.
     """
-    if not os.path.exists(db_dir):
-        os.makedirs(db_dir, exist_ok=True)
-
     Base.metadata.create_all(bind=engine)
-    print("Database initialized successfully")
+    print(f"Database initialized successfully at {db_path}")
 
 def table_exists(table_name: str) -> bool:
     """Check if specified table exists in database.
