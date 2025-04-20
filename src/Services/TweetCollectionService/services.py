@@ -8,7 +8,7 @@ Contains the FileProcessingService class with data parsing and validation logic.
 import re
 import os
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict
 from database import Session, create_table, table_exists
 from exceptions import InvalidDataFormatError
 
@@ -44,7 +44,7 @@ class FileProcessingService:
             - No file extensions
         """
         name = os.path.splitext(filename)[0]
-        return re.sub(r'[^a-zA-Z0-9_]', '_', name).lower()
+        return re.sub(r'\W', '_', name).lower()
 
     def process_file(self, file) -> Dict:
         """Process uploaded file and store data in database.
@@ -94,7 +94,7 @@ class FileProcessingService:
 
         except UnicodeDecodeError:
             raise InvalidDataFormatError("Invalid file encoding")
-        except Exception as e:
+        except Exception:
             self.session.rollback()
             raise
         finally:

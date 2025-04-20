@@ -23,6 +23,7 @@ class SentimentAnalyzer:
             logger.error(f"🔥 Error loading sentiments: {str(e)}")
             return {}
 
+    # TODO:  Improper sense processing (Bohr's algorithm should be used
     def analyze(self, text):
         try:
             words = re.findall(r'\b\w+\b', text.lower())

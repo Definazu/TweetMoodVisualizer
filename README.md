@@ -1,17 +1,31 @@
 <h1 align="center">TweetMoodVisualizer</h1>
+<p align="center">
+<img alt="GitHub License" src="https://img.shields.io/github/license/Definazu/TweetMoodVisualizer">
+<img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/Definazu/TweetMoodVisualizer/total">
+<img alt="GitHub watchers" src="https://img.shields.io/github/watchers/Definazu/TweetMoodVisualizer">
+<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/Definazu/TweetMoodVisualizer">
+</p>
 
 ## Description
 This program is the solution of the first laboratory work on OOP in the 4th term of the Yanka Kupala State Uneversity of Grodno.
 
 ## Table of content
 1. [Problem Requiments](https://github.com/Definazu/TweetMoodVisualizer#problem-requiments)
+	
 	a. [Input data](https://github.com/Definazu/TweetMoodVisualizer#input-data)
+	
 	b. [Phase 1. The feelings in tweets](https://github.com/Definazu/TweetMoodVisualizer#phase-1-the-feelings-in-tweets)
+	
 	c. [Phase 2. The mood of the nation](https://github.com/Definazu/TweetMoodVisualizer#phase-2-the-mood-of-the-nation)
 2. [Project Stack](https://github.com/Definazu/TweetMoodVisualizer#project-stack)
 3. [Description of microservices](https://github.com/Definazu/TweetMoodVisualizer#description-of-microservices)
+	
 	a. [TweetCollectionService](https://github.com/Definazu/TweetMoodVisualizer#tweetcollectionservice)
+	
 	b. [SentimentalAnalysisService](https://github.com/Definazu/TweetMoodVisualizer#sentimentalanalysisservice)
+
+	c. [Client](https://github.com/Definazu/TweetMoodVisualizer#client)
+4. [Installation](https://github.com/Definazu/TweetMoodVisualizer#installation)
 
 ## Problem Requiments
 In this project, you will develop a visualization of twitter data across the USA. The map displayed below depicts how the people in different states feel about California.
@@ -67,9 +81,8 @@ You should now be able to draw maps that are colored by sentiment corresponding 
 
 ## Project Stack
 * Flask (API)
-* React
-* PostgresDB
-* Unit Tests 
+* React + Vite
+* SQLite3
 * Docker
 
 ## Description of microservices
@@ -83,6 +96,7 @@ You should now be able to draw maps that are colored by sentiment corresponding 
 #### Technologes:
 - Pyhton
 - Flask
+- SQLAlchemy
 
 ### SentimentalAnalysisService
 
@@ -94,3 +108,45 @@ You should now be able to draw maps that are colored by sentiment corresponding 
 #### Technologes:
 - Python
 - Flask
+- SQLAlchemy
+- Shapely
+- JSON
+
+### Client
+
+#### Functions:
+- Interaction with microservices
+- Map display
+
+#### Technologes:
+- React
+- Vite
+
+## Installation
+1. `Install git repository`
+```
+$ git clone https://github.com/Definazu/TweetMoodVisualizer.git
+```
+2. `Run Docker Compose` (Docker must be installed beforehand)
+* For Linux (ArchLinux)
+```
+$ cd TweetMoodVisualizer
+$ docker-compose up --build
+```
+* For Windows
+```
+$ cd TweetMoodVisualizer
+$ docker compose up --build
+```
+
+3. After launching the docker you can go to the link localhost:5173 in your browser.
+
+4. `To shut down` the project, write in the console
+* For Linux (ArchLinux)
+```
+$ docker-compose down -v
+```
+* For Windows
+```
+$ docker compose down -v
+```

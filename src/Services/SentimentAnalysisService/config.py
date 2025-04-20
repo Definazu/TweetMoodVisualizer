@@ -12,9 +12,12 @@ class Config:
         self.states_path = self.base_dir / 'Data' / 'states.json'
 
         missing = []
-        if not self.db_path.exists(): missing.append(self.db_path)
-        if not self.sentiments_path.exists(): missing.append(self.sentiments_path)
-        if not self.states_path.exists(): missing.append(self.states_path)
+        if not self.db_path.exists(): 
+            missing.append(self.db_path)
+        if not self.sentiments_path.exists(): 
+            missing.append(self.sentiments_path)
+        if not self.states_path.exists(): 
+            missing.append(self.states_path)
         
         if missing:
             raise FileNotFoundError(
